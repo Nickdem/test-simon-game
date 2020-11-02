@@ -217,14 +217,14 @@ body {
 }
 
 .button-group button:first-child {
-  color: green
+  color: green;
 }
 
 .button-group button:nth-child(2) {
-  color: orange
+  color: orange;
 }
 
 .button-group button:last-child {
-  color: red
+  color: red;
 }
 </style>
