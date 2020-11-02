@@ -2,16 +2,17 @@
   <div class="home">
     <div class="container">
       <h1>Lvl - {{level}}</h1>
-    <div class="playfield">
-      <Btn v-for="btn of gameBtn" :key="btn" :text="btn" @handler="click" class="playfield-button" :ref="'btn' + btn" />
-    </div> 
-    <div class="game-over" v-if="state == 'фэйл'">
-      <GameOver @re="restart"/>
+      <div class="playfield">
+        <Btn v-for="btn of gameBtn" :key="btn" :text="btn" @handler="click" class="playfield-button" :ref="'btn' + btn" />
+      </div> 
+      <div class="game-over" v-if="state == 'фэйл'">
+        <GameOver @re="restart"/>
+      </div>
+      <div class="button-group" v-if="level === 0">
+        <Btn v-for="btn of menuBtn" :key="btn" :text="btn" @handler="start" />
+      </div>
     </div>
-    <div class="button-group" v-if="level === 0">
-      <Btn v-for="btn of menuBtn" :key="btn" :text="btn" @handler="start" />
-    </div>
-    </div>
+    <!-- <div ref="audio"></div>  build -->
   </div>
 </template>
 
@@ -83,15 +84,20 @@ export default {
       setTimeout(() => {
           btn.classList.remove('click') 
       }, 200)
-
-      this.playAudio(require(`./sounds/${n + 1}.ogg`))
-      
+      //dev
+      this.playAudio(require(`./sounds/${n + 1}.ogg`))  
+      //this.playAudio(n + 1) // build
       this.state == 'продолжаю' && this.checkSequence(n)
     },
 
     playAudio (sound) {
+      //dev
       const audio = new Audio(sound)
       audio.play()
+
+      //build - добавить папку sound
+      // const audio = this.$refs.audio
+      // audio.innerHTML = `<audio autoplay><source src="./sounds/${sound}.ogg" type="audio/ogg" /></audio>`
     }, 
        
     checkSequence (key) {
