@@ -3,20 +3,20 @@
     <div class="container">
       <h1>Lvl - {{level}}</h1>
     <div class="playfield">
-      <button v-for="num of gameBtn" :key="num" type="button" :ref="'btn'+num" class="playfield-button" @click='click(num)'></button>
+      <Btn v-for="btn of gameBtn" :key="btn" :text="btn" @handler="click" class="playfield-button" :ref="'btn' + btn" />
     </div> 
     <div class="game-over" v-if="state == 'фэйл'">
       <GameOver @re="restart"/>
     </div>
     <div class="button-group" v-if="level === 0">
-      <MenuBtn v-for="btn of menuBtn" :key="btn" :text="btn" @handler="start" />
+      <Btn v-for="btn of menuBtn" :key="btn" :text="btn" @handler="start" />
     </div>
     </div>
   </div>
 </template>
 
 <script>
-import MenuBtn from './components/MenuBtn'
+import Btn from './components/Btn'
 import GameOver from './components/GameOver'
 export default {
   name: 'App',
@@ -28,7 +28,7 @@ export default {
     state: 'жду',
     currentSequence: []
   }),
-  components: {MenuBtn, GameOver},
+  components: {Btn, GameOver},
   methods: {
     start (value) {
       this.state = 'продолжаю'
@@ -50,8 +50,8 @@ export default {
 
         setTimeout(() => {
           const key = `btn${n}`
-          let lb = this.$refs[key][0]
-          lb.click(n)
+          let btn = this.$refs[key][0].$el
+          btn.click(n)
 
           if (i == sequence.length - 1) {
             this.state = 'продолжаю'
@@ -77,30 +77,28 @@ export default {
 
     click (n) {
       const key = `btn${n}`
-      let lb = this.$refs[key][0]
-      lb.classList.add('click')
+      let btn = this.$refs[key][0].$el
+      btn.classList.add('click')
       
       setTimeout(() => {
-          lb.classList.remove('click') 
+          btn.classList.remove('click') 
       }, 200)
 
-      this.playSound(require(`./sounds/${n + 1}.ogg`))
+      this.playAudio(require(`./sounds/${n + 1}.ogg`))
       
-      this.state == 'продолжаю' && this.checkSequence(key)
+      this.state == 'продолжаю' && this.checkSequence(n)
     },
 
-    playSound (sound) {
+    playAudio (sound) {
       const audio = new Audio(sound)
       audio.play()
     }, 
        
     checkSequence (key) {
-      const keymap = {"btn0": 0, "btn1": 1, "btn2": 2, "btn3": 3}
-      const keyindex = keymap[key]
-      const expected = this.shiftSequence()
-
-      if (expected == keyindex) {
-        if (!this.sequence().length) {
+      const expected = this.currentSequence.shift()
+      
+      if (expected == key) {
+        if (!this.currentSequence.length) {
           setTimeout(() => {
             this.state = 'жду'
             this.levelUp()
@@ -109,14 +107,6 @@ export default {
       } else {
         this.gameOver()
       }
-    },
-
-    sequence () {
-      return this.currentSequence
-    },
-
-    shiftSequence () {
-      return this.currentSequence.shift()
     },
 
     gameOver () {
@@ -166,14 +156,14 @@ body {
   cursor: pointer;
   width: 250px;
   height: 250px;
-  margin: 0 1px;
+  margin: 0;
   border: none;
   opacity: .3;  
 }
 
 .playfield-button:first-child {
   border-top-left-radius: 100%;
-  background-color: blue;
+  background-color: lightblue;
 }
 
 .playfield-button:nth-child(2) {
@@ -201,7 +191,7 @@ body {
   position: absolute;
   background: #ffffff;
   opacity: .8;
-  width: 500px;
+  width: 700px;
   height: 700px;
   display: flex;
   justify-content: center;
