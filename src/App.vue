@@ -204,6 +204,24 @@ body {
   align-items: center;
 }
 
+.game-over div {
+  text-align: center;
+}
+
+.game-over p {
+  font-size: 24px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.game-over button {
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px;
+  background: green;
+  color: #ffffff;
+}
+
 .button-group {
   width: 300px;
   display: flex;
